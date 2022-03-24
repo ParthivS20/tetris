@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="EOY Project Part 2 - Tetris:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/EOY_Project_Part_2___Tetris_jar</output-path>
+    <root id="archive" name="EOY Project Part 2 - Tetris.jar">
+      <element id="module-output" name="EOY Project Part 2 - Tetris" />
+    </root>
+  </artifact>
+</component>
