@@ -12,14 +12,16 @@ public class Tetris implements ArrowListener {
 	private Tetrad activeTetrad;		// The active Tetrad (Tetris Piece).
 	private int score;
 	private int level;
+	private boolean gameLost;
 
 	// Constructs a Tetris Game
 	public Tetris() {
 		grid = new BoundedGrid<>(20, 10);
 		score = 0;
 		level = 1;
+		gameLost = false;
 		display = new BlockDisplay(grid);
-		display.setTitle("Tetris • Score: " + score + " • Level: " + level);
+		updateTitle();
 		display.setArrowListener(this);
 		activeTetrad = new Tetrad(grid);
 		display.showBlocks();
@@ -27,9 +29,10 @@ public class Tetris implements ArrowListener {
 
 	// Play the Tetris Game
 	public void play() {
-		while (true) {
+		while (!gameLost) {
 			nextFrame();
 		}
+		System.out.println("Game lost");
 	}
 
 	private void nextFrame() {
@@ -37,8 +40,13 @@ public class Tetris implements ArrowListener {
 		boolean stopped = !activeTetrad.translate(1, 0);
 		if(stopped) {
 			activeTetrad = new Tetrad(grid);
+			if(activeTetrad.getIncompleteSpawn()) {
+				gameLost = true;
+				return;
+			}
 			clearCompletedRows();
 		}
+		updateTitle();
 		display.showBlocks();
 	}
 
@@ -78,6 +86,10 @@ public class Tetris implements ArrowListener {
 		}
 	}
 
+	public void updateTitle() {
+		display.setTitle("Tetris • Score: " + score + " • Level: " + level);
+	};
+
 	// Sleeps (suspends the active thread) for duration seconds.
 	private void sleep(double duration) {
 		final int MILLISECONDS_PER_SECOND = 1000;
@@ -96,31 +108,39 @@ public class Tetris implements ArrowListener {
 
 	@Override
 	synchronized public void upPressed() {
-		activeTetrad.rotate();
-		display.showBlocks();
+		if(!gameLost) {
+			activeTetrad.rotate();
+			display.showBlocks();
+		}
 	}
 
 	@Override
 	synchronized public void downPressed() {
-		activeTetrad.translate(1, 0);
-		display.showBlocks();
+		if(!gameLost) {
+			activeTetrad.translate(1, 0);
+			display.showBlocks();
+		}
 	}
 
 	@Override
 	synchronized public void leftPressed() {
-		activeTetrad.translate(0, -1);
-		display.showBlocks();
+		if(!gameLost) {
+			activeTetrad.translate(0, -1);
+			display.showBlocks();
+		}
 	}
 
 	@Override
 	synchronized public void rightPressed() {
-		activeTetrad.translate(0, 1);
-		display.showBlocks();
+		if(!gameLost) {
+			activeTetrad.translate(0, 1);
+			display.showBlocks();
+		}
 	}
 
 	@Override
 	synchronized public void spacePressed() {
-		while(true) {
+		while(!gameLost) {
 			boolean done = !activeTetrad.translate(1, 0);
 			if(done) {
 				break;

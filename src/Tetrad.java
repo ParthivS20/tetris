@@ -13,7 +13,8 @@ import java.awt.Color;
 
 // Represents a Tetris piece.
 public class Tetrad {
-	private Block[] blocks;	// The blocks for the piece.
+	private final Block[] blocks;	// The blocks for the piece.
+	private boolean incompleteSpawn;
 
 	// Constructs a Tetrad.
 	public Tetrad(BoundedGrid<Block> grid) {
@@ -22,8 +23,8 @@ public class Tetrad {
 			blocks[i] = new Block();
 		}
 
-		Color tempColor = Color.white;
-		Location[] tempLocs = new Location[4];
+		Color tempColor;
+		Location[] tempLocs;
 		int type = (int) (Math.random() * 7);
 
 		switch(type) {
@@ -68,8 +69,10 @@ public class Tetrad {
 			b.setColor(tempColor);
 		}
 
-		addToLocations(grid, tempLocs);
-		translate(0, -1);
+		if(!addToLocations(grid, tempLocs)) {
+				incompleteSpawn = true;
+		}
+		//translate(0, -1);
 	}
 
 
@@ -79,7 +82,7 @@ public class Tetrad {
 	//						Returns true if successful and false otherwise.
 	public boolean translate(int deltaRow, int deltaCol) {
 		BoundedGrid<Block> g = blocks[0].getGrid();
-		Location[] curLocs = removeBlocks();;
+		Location[] curLocs = removeBlocks();
 		Location[] newLocs = new Location[curLocs.length];
 		for(int i = 0; i < newLocs.length; i++) {
 			newLocs[i] = new Location(curLocs[i].getRow() + deltaRow, curLocs[i].getCol() + deltaCol);
@@ -99,7 +102,7 @@ public class Tetrad {
 	//                Returns true if successful and false otherwise.
 	public boolean rotate() {
 		BoundedGrid<Block> g = blocks[0].getGrid();
-		Location[] curLocs = removeBlocks();;
+		Location[] curLocs = removeBlocks();
 		Location[] newLocs = new Location[curLocs.length];
 		newLocs[0] = curLocs[0];
 		for(int i = 1; i < newLocs.length; i++) {
@@ -120,10 +123,16 @@ public class Tetrad {
 	//                locs.length = 4.
 	// Postcondition: The elements of blocks have been put in the grid
 	//                and their locations match the elements of locs.
-	private void addToLocations(BoundedGrid<Block> grid, Location[] locs) {
-		for(int i = 0; i < blocks.length; i++) {
-			blocks[i].putSelfInGrid(grid, locs[i]);
+	private boolean addToLocations(BoundedGrid<Block> grid, Location[] locs) {
+		if(areEmpty(grid, locs)) {
+			for(int i = 0; i < blocks.length; i++) {
+				blocks[i].putSelfInGrid(grid, locs[i]);
+			}
+
+			return true;
 		}
+
+		return false;
 	}
 
 	// Precondition:  The elements of blocks are in the grid.
@@ -153,5 +162,9 @@ public class Tetrad {
 		Location temp = locs[0];
 		locs[0] = locs[pivot - 1];
 		locs[pivot - 1] = temp;
+	}
+
+	public boolean getIncompleteSpawn() {
+		return incompleteSpawn;
 	}
 }
