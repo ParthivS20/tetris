@@ -67,6 +67,7 @@ public class BlockDisplay implements KeyListener {
 
 		//Display the window.
 		frame.pack();
+		frame.setResizable(false);
 		frame.setVisible(true);
 	}
 
@@ -93,12 +94,12 @@ public class BlockDisplay implements KeyListener {
 	}
 
 	// Sets the title of the window.
-	public void setTitle(String title)
-	{
+	public void setTitle(String title) {
 		frame.setTitle(title);
 	}
 
 	public void keyTyped(KeyEvent e) {
+
 	}
 
 	public void keyReleased(KeyEvent e) {
@@ -109,6 +110,7 @@ public class BlockDisplay implements KeyListener {
 		if (listener == null)
 			return;
 		int code = e.getKeyCode();
+
 		if (code == KeyEvent.VK_LEFT)
 			listener.leftPressed();
 		else if (code == KeyEvent.VK_RIGHT)
@@ -121,8 +123,7 @@ public class BlockDisplay implements KeyListener {
 			listener.spacePressed();
 	}
 
-	public void setArrowListener(ArrowListener listener)
-	{
+	public void setArrowListener(ArrowListener listener) {
 		this.listener = listener;
 	}
 }
